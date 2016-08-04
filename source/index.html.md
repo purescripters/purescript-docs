@@ -2,10 +2,7 @@
 title: API Reference
 
 language_tabs:
-  - shell
-  - ruby
-  - python
-  - javascript
+  - purescript
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -19,171 +16,61 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+PureScript is a small strongly typed programming language that compiles to JavaScript.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+PureScript’s expressive type system and lightweight syntax make it simple to define domain-specific languages, which can be used to solve problems like templating the DOM. Bindings also exist for libraries such as React and Angular.js.
 
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+# Syntax Basics
 
-# Authentication
+Much of PureScript's core syntax should be familiar to anyone who has ever used a typed language like Haskell, F# or Elm. However, there are some distinct differences between PureScript and other languages. The examples in this document give an overview of the most important language constructs and their respective syntax.
 
-> To authorize, use this code:
+## Simple Primitives
 
-```ruby
-require 'kittn'
+Primitive | Example
+--------- | ------- |
+Boolean | true
+String | "Hello World"
+Char | 'a'
+Int | 42
+Number | 42.0
+Array Int | [1, 2, 3]
+Record  | { pure: "script" }
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
 
-```python
-import kittn
+Operation | Example
+--------- | ------- |
+Equality | a == b
+String Concatenation | "Hello, " <> "World"
+Accessing a Record Field | author.name
 
-api = kittn.authorize('meowmeowmeow')
-```
+## Defining your own Types
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+PureScript allows you to define your own Types. To do that, you use the `data` keyword followed by the name of the Type. Let's go ahead and define us an `Address` Type.
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+```purescript
+data Address = Address
+  { street :: String
+  , city :: String,
+  , zip :: String
   }
-]
 ```
 
-This endpoint retrieves all kittens.
+How do you read this now? Well, we've just defined how an `Address` should look like. Means, since it is a Record, it (always) has the following fields: `street`, `city` and `zip`. All three fields require to be of type `String` as well.
 
-### HTTP Request
+> Notice that you're not creating an instance of this type! All you did is that you _defined_ how an `Address` should look like.
 
-`GET http://example.com/api/kittens`
+So far so good! We've now defined ourselfs an Address Type.
+Now, let's create an instance off of it:
 
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
+```purescript
+let address = Address { street: "1337 Purescript Ave", city: "Purewood", zip: "1337" }
 ```
 
-```python
-import kittn
+Awesome, we now have an instance of type `Address` which we can use to do a lot of great stuff, like... uhm... you know... sending it to a server or whatever pleases you.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+Dont belive me? Let's see what the PureScript REPL says:
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
+$ :type address
+Address
 ```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
